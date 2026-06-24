@@ -8,27 +8,15 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;}
-
-/* ── DESKTOP SHELL ── */
-.desktop-shell{width:100%;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:0;}
+.desktop-shell{width:100%;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;}
 .app{width:100%;max-width:480px;min-height:100vh;background:#FFF9F0;position:relative;overflow:hidden;display:flex;flex-direction:column;transition:max-width .3s;}
-
-/* Desktop mode: show phone frame */
 @media(min-width:600px){
   body{align-items:center;min-height:100vh;padding:24px 0;}
   .app{max-width:420px;min-height:720px;max-height:88vh;border-radius:32px;box-shadow:0 24px 80px rgba(0,0,0,.22);overflow:hidden;}
   .app.fullscreen{max-width:100vw;width:100vw;min-height:100vh;max-height:100vh;border-radius:0;position:fixed;inset:0;z-index:9999;}
 }
-@media(max-width:599px){
-  body{padding:0;}
-  .app{max-width:100%;border-radius:0;}
-  .fs-btn{display:none!important;}
-}
-/* Random */
-/* FULLSCREEN BUTTON */
+@media(max-width:599px){body{padding:0;}.app{max-width:100%;border-radius:0;}.fs-btn{display:none!important;}}
 .fs-btn{position:fixed;bottom:20px;right:20px;width:42px;height:42px;border-radius:50%;background:#FF6B35;border:none;color:#fff;font-size:18px;cursor:pointer;box-shadow:0 4px 12px rgba(255,107,53,.4);z-index:10000;display:flex;align-items:center;justify-content:center;}
-
-/* SCROLLABLE BODY */
 .screen{display:none;flex-direction:column;flex:1;overflow:hidden;}
 .screen.active{display:flex;}
 .scroll-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
@@ -44,6 +32,13 @@ body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display
 .profile-btn{position:absolute;right:14px;top:12px;width:36px;height:36px;border-radius:50%;border:3px solid #FFE066;cursor:pointer;overflow:hidden;background:#FFE8CC;display:flex;align-items:center;justify-content:center;font-size:18px;padding:0;}
 .profile-btn img{width:100%;height:100%;object-fit:cover;}
 
+/* LOADING OVERLAY */
+.loading-overlay{position:absolute;inset:0;background:#FFF9F0;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.loading-overlay.hidden{display:none;}
+.loading-spinner{width:44px;height:44px;border:4px solid #FFE0CC;border-top-color:#FF6B35;border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:14px;font-weight:700;color:#FF6B35;}
+
 /* AUTH */
 .auth-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 24px;overflow-y:auto;}
 .alogo{font-size:52px;margin-bottom:10px;}
@@ -51,14 +46,15 @@ body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display
 .asub{font-size:13px;color:#888;margin-bottom:22px;text-align:center;line-height:1.5;}
 .ainput{width:100%;padding:12px 15px;border-radius:13px;border:3px solid #FFB347;font-size:15px;font-family:'Nunito',sans-serif;font-weight:700;color:#333;background:#fff;outline:none;margin-bottom:11px;}
 .ainput:focus{border-color:#FF6B35;}
-.abtn{width:100%;padding:13px;border-radius:99px;border:none;background:#FF6B35;color:#fff;font-size:16px;font-weight:900;font-family:'Nunito',sans-serif;cursor:pointer;margin-bottom:9px;transition:transform .15s;}
+.abtn{width:100%;padding:13px;border-radius:99px;border:none;background:#FF6B35;color:#fff;font-size:16px;font-weight:900;font-family:'Nunito',sans-serif;cursor:pointer;margin-bottom:9px;transition:transform .15s;position:relative;}
 .abtn:active{transform:scale(.97);}
+.abtn:disabled{opacity:.6;cursor:not-allowed;}
 .abtn.sec{background:#fff;color:#FF6B35;border:3px solid #FF6B35;}
 .abtn.ghost{background:transparent;color:#aaa;border:none;font-size:12px;margin-top:1px;}
 .adiv{display:flex;align-items:center;gap:8px;margin:2px 0 11px;width:100%;}
 .adiv span{font-size:11px;color:#bbb;white-space:nowrap;}
 .adiv hr{flex:1;border:none;border-top:1px solid #eee;}
-.aerr{color:#EF5350;font-size:12px;font-weight:700;text-align:center;margin-bottom:7px;min-height:15px;}
+.aerr{color:#EF5350;font-size:12px;font-weight:700;text-align:center;margin-bottom:7px;min-height:15px;line-height:1.4;}
 .aok{color:#66BB6A;font-size:12px;font-weight:700;text-align:center;margin-bottom:7px;min-height:15px;}
 .flink{color:#FF6B35;font-size:12px;font-weight:700;background:none;border:none;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:-4px;margin-bottom:9px;}
 
@@ -69,9 +65,8 @@ body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display
 .htag{font-size:17px;font-weight:900;color:#FF6B35;margin-top:7px;}
 .hsub{font-size:12px;color:#888;margin-top:2px;}
 
-/* GAMES GRID — 2 col on mobile, up to 4 on desktop */
+/* GAMES GRID */
 .ggrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:12px 14px 16px;}
-@media(min-width:600px){.ggrid{grid-template-columns:repeat(2,1fr);}}
 .gcard{background:#fff;border-radius:16px;padding:13px 10px 11px;text-align:center;cursor:pointer;border:3px solid transparent;transition:transform .15s;box-shadow:0 3px 10px rgba(0,0,0,.07);position:relative;}
 .gcard:active{transform:scale(.95);}
 .gce{font-size:32px;margin-bottom:4px;}
@@ -80,7 +75,6 @@ body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display
 .gcard[data-c="or"]{border-color:#FF6B35;}
 .gcard[data-c="bl"]{border-color:#42A5F5;}
 .gcard[data-c="gr"]{border-color:#66BB6A;}
-.gcard[data-c="pu"]{border-color:#AB47BC;}
 .gcard[data-c="pi"]{border-color:#EC407A;}
 .gcard[data-c="te"]{border-color:#26C6DA;}
 .gcard[data-c="am"]{border-color:#FFA726;}
@@ -88,11 +82,11 @@ body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display
 .gcard[data-c="gy"]{border-color:#78909C;}
 .gcard[data-c="in"]{border-color:#5C6BC0;}
 
-/* RESULT CARD — collapsible */
+/* RESULT CARD */
 .result-card{margin:0 14px 14px;border-radius:18px;overflow:hidden;border:2px solid #FFE0CC;}
 .result-card-hdr{background:#FF6B35;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
 .result-card-title{font-size:14px;font-weight:900;color:#fff;}
-.result-card-meta{font-size:12px;color:rgba(255,255,255,.8);}
+.result-card-meta{font-size:11px;color:rgba(255,255,255,.8);}
 .result-card-arrow{font-size:18px;color:#FFE066;transition:transform .25s;}
 .result-card-arrow.open{transform:rotate(180deg);}
 .result-card-body{background:#fff;max-height:0;overflow:hidden;transition:max-height .35s ease;}
@@ -107,11 +101,10 @@ body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display
 .total-label{font-size:12px;font-weight:900;color:#FF6B35;}
 .total-val{font-size:20px;font-weight:900;color:#FF6B35;}
 
-/* GUEST SCORE BANNER */
+/* GUEST BANNER */
 .guest-banner{background:#FFF3E0;border:2px dashed #FFB347;border-radius:14px;margin:0 14px 14px;padding:12px 14px;text-align:center;}
 .guest-banner p{font-size:12px;color:#888;margin-bottom:8px;}
 .guest-banner button{padding:8px 18px;border-radius:99px;border:none;background:#FF6B35;color:#fff;font-size:13px;font-weight:900;font-family:'Nunito',sans-serif;cursor:pointer;}
-
 .hlo{text-align:center;padding-bottom:18px;}
 .lobtn{background:none;border:none;color:#bbb;font-size:12px;font-family:'Nunito',sans-serif;cursor:pointer;}
 
@@ -188,7 +181,6 @@ body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display
 .sbtn svg{width:44px;height:44px;}
 .sbtn.correct{border-color:#4CAF50!important;background:#E8F5E9;animation:cpop .5s ease;}
 .sbtn.wrong{border-color:#EF5350!important;background:#FFEBEE;animation:cshk .4s ease;}
-
 .ldsp{text-align:center;margin:11px 0 0;font-size:60px;font-weight:900;color:#FF6B35;line-height:1;}
 .lch{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;padding:9px 14px 0;}
 .lbtnx{height:60px;border-radius:14px;background:#fff;border:3px solid #e0e0e0;cursor:pointer;font-size:26px;font-weight:900;font-family:'Nunito',sans-serif;color:#333;box-shadow:0 3px 9px rgba(0,0,0,.07);}
@@ -217,7 +209,7 @@ body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display
 .shad-row{display:flex;justify-content:center;padding:13px 14px 0;}
 .shad-obj{font-size:72px;line-height:1;}
 .shad-ch{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;padding:11px 14px 0;}
-.shad-btn{height:80px;border-radius:14px;background:#E8EAF6;border:3px solid #C5CAE9;cursor:pointer;font-size:46px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 9px rgba(0,0,0,.1);position:relative;overflow:hidden;}
+.shad-btn{height:80px;border-radius:14px;background:#E8EAF6;border:3px solid #C5CAE9;cursor:pointer;font-size:46px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 9px rgba(0,0,0,.1);}
 .shad-btn .shad-emoji{display:inline-block;filter:brightness(0);opacity:0.75;}
 .shad-btn.correct{border-color:#4CAF50!important;background:#E8F5E9;animation:cpop .5s ease;}
 .shad-btn.correct .shad-emoji{filter:none;opacity:1;}
@@ -227,6 +219,13 @@ body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display
 </head>
 <body>
 <div class="app" id="app">
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading...</div>
+</div>
+
 <div class="cfa" id="cf"></div>
 <div class="wino" id="wo">
   <div class="we" id="we">🎉</div><div class="wt" id="wt">Amazing!</div>
@@ -255,9 +254,9 @@ body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display
     <div class="alogo">✏️</div><div class="atitle">Create Account</div><div class="asub">Tell us about your child!</div>
     <input class="ainput" id="su-name" type="text" placeholder="Child's name" maxlength="20">
     <input class="ainput" id="su-email" type="email" placeholder="Parent's email">
-    <input class="ainput" id="su-pass" type="password" placeholder="Password (min 4 chars)">
+    <input class="ainput" id="su-pass" type="password" placeholder="Password (min 6 chars)">
     <div class="aerr" id="su-err"></div>
-    <button class="abtn" onclick="dSU()">Let's Play!</button>
+    <button class="abtn" id="su-btn" onclick="dSU()">Let's Play!</button>
     <button class="abtn ghost" onclick="sS('login')">Already have an account? Log in</button>
   </div>
 </div>
@@ -270,7 +269,7 @@ body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display
     <input class="ainput" id="li-email" type="email" placeholder="Email">
     <input class="ainput" id="li-pass" type="password" placeholder="Password">
     <div class="aerr" id="li-err"></div>
-    <button class="abtn" onclick="dLI()">Log In</button>
+    <button class="abtn" id="li-btn" onclick="dLI()">Log In</button>
     <button class="flink" onclick="sS('forgot')">Forgot password?</button>
     <button class="abtn ghost" onclick="sS('signup')">No account? Sign up</button>
   </div>
@@ -281,10 +280,10 @@ body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display
   <div class="hdr"><button class="hbk" onclick="sS('login')">←</button><div class="hdr-logo">Kids <span>Playroom</span></div></div>
   <div class="auth-body">
     <div class="alogo">🔑</div><div class="atitle">Reset Password</div>
-    <div class="asub">Enter the parent email. We'll send a password reset link.</div>
+    <div class="asub">Enter the parent email address. Firebase will send a real password reset link instantly.</div>
     <input class="ainput" id="fp-email" type="email" placeholder="Parent's email">
     <div class="aerr" id="fp-err"></div><div class="aok" id="fp-ok"></div>
-    <button class="abtn" onclick="dFP()">Send Reset Link</button>
+    <button class="abtn" id="fp-btn" onclick="dFP()">Send Reset Link</button>
     <button class="abtn ghost" onclick="sS('login')">Back to login</button>
   </div>
 </div>
@@ -301,14 +300,11 @@ body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display
       <div class="htag" id="htag">Hi there! Ready to play?</div>
       <div class="hsub">Choose a game below</div>
     </div>
-    <!-- GAMES FIRST -->
     <div class="ggrid" id="game-grid"></div>
-    <!-- GUEST BANNER -->
     <div class="guest-banner" id="guest-banner" style="display:none;">
       <p>🔒 Log in to save your scores and track your progress!</p>
       <button onclick="sS('login')">Log In to Save Scores</button>
     </div>
-    <!-- RESULT CARD (collapsible, logged-in only) -->
     <div class="result-card" id="result-card" style="display:none;">
       <div class="result-card-hdr" onclick="toggleResults()">
         <div><div class="result-card-title">📊 My Results</div><div class="result-card-meta" id="rc-meta">Tap to expand</div></div>
@@ -338,13 +334,16 @@ body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display
     </div>
     <div class="pfield-wrap"><div class="pfield-label">Child's Name</div><input class="ainput" id="pf-name" type="text" placeholder="Child's name" maxlength="20"></div>
     <div class="psec-title">Account Details</div>
-    <div class="pfield-wrap"><div class="pfield-label">Parent's Email</div><input class="ainput" id="pf-email" type="email" placeholder="Parent's email"></div>
+    <div class="pfield-wrap"><div class="pfield-label">Parent's Email</div><input class="ainput" id="pf-email" type="email" placeholder="Parent's email" readonly style="opacity:.6;cursor:not-allowed;"></div>
     <div class="psec-title">Change Password</div>
-    <div class="pfield-wrap"><div class="pfield-label">Current Password</div><input class="ainput" id="pf-op" type="password" placeholder="Current password"></div>
-    <div class="pfield-wrap"><div class="pfield-label">New Password</div><input class="ainput" id="pf-np" type="password" placeholder="New password (min 4 chars)"></div>
+    <div class="pfield-wrap"><div class="pfield-label">New Password</div><input class="ainput" id="pf-np" type="password" placeholder="New password (min 6 chars)"></div>
+    <div class="pfield-wrap"><div class="pfield-label">Confirm New Password</div><input class="ainput" id="pf-cp" type="password" placeholder="Confirm new password"></div>
     <div class="aerr" id="pf-err"></div><div class="aok" id="pf-ok"></div>
-    <button class="abtn" onclick="savePF()" style="margin-top:4px;">Save Changes</button>
+    <button class="abtn" id="pf-btn" onclick="savePF()" style="margin-top:4px;">Save Changes</button>
     <button class="abtn sec" onclick="sS('home')" style="margin-top:4px;">Cancel</button>
+    <div style="margin-top:16px;text-align:center;">
+      <button onclick="sendPWReset()" style="background:none;border:none;color:#FF6B35;font-size:12px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;">Send password reset email instead</button>
+    </div>
   </div>
 </div>
 
@@ -352,7 +351,6 @@ body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display
 <div class="screen" id="s-color"><div class="hdr"><button class="hbk" onclick="gH()">←</button><div class="hdr-logo">🎨 <span>Color Splash</span></div><div class="sbadge" id="c-sc">⭐ 0</div></div><div class="gbody"><div class="narea"><div class="nface" id="c-f">😊</div><div class="sbub" id="c-b">Find the color!</div></div><div class="srow" id="c-st"></div><div class="pwrap"><div class="pfill" id="c-p" style="width:0%"></div></div><div class="lbwrap" id="c-l"><div class="lbfill" id="c-lf"></div></div><div class="slbl">Find this color!</div><div class="ctbox" id="c-t"></div><div class="cch" id="c-ch"></div><div class="gnav"><button class="nbtn bn hidden" id="c-pb" onclick="pR()">← Prev</button><button class="nbtn sn" onclick="skR()">Skip</button><button class="nbtn nn" onclick="nR()">Next →</button></div></div></div>
 <div class="screen" id="s-count"><div class="hdr"><button class="hbk" onclick="gH()">←</button><div class="hdr-logo">🔢 <span>Count!</span></div><div class="sbadge" id="co-sc">⭐ 0</div></div><div class="gbody"><div class="narea"><div class="nface" id="co-f">😊</div><div class="sbub" id="co-b">How many?</div></div><div class="srow" id="co-st"></div><div class="pwrap"><div class="pfill" id="co-p" style="width:0%"></div></div><div class="lbwrap" id="co-l"><div class="lbfill" id="co-lf"></div></div><div class="slbl">How many?</div><div class="cobjs" id="co-ch"></div><div class="nch" id="co-n"></div><div class="gnav"><button class="nbtn bn hidden" id="co-pb" onclick="pR()">← Prev</button><button class="nbtn sn" onclick="skR()">Skip</button><button class="nbtn nn" onclick="nR()">Next →</button></div></div></div>
 <div class="screen" id="s-shape"><div class="hdr"><button class="hbk" onclick="gH()">←</button><div class="hdr-logo">🔷 <span>Shape Hunt</span></div><div class="sbadge" id="sh-sc">⭐ 0</div></div><div class="gbody"><div class="narea"><div class="nface" id="sh-f">😊</div><div class="sbub" id="sh-b">Find the shape!</div></div><div class="srow" id="sh-st"></div><div class="pwrap"><div class="pfill" id="sh-p" style="width:0%"></div></div><div class="lbwrap" id="sh-l"><div class="lbfill" id="sh-lf"></div></div><div class="slbl">Find this shape!</div><div class="stgt" id="sh-t"></div><div class="sch" id="sh-ch"></div><div class="gnav"><button class="nbtn bn hidden" id="sh-pb" onclick="pR()">← Prev</button><button class="nbtn sn" onclick="skR()">Skip</button><button class="nbtn nn" onclick="nR()">Next →</button></div></div></div>
-
 <div class="screen" id="s-letter"><div class="hdr"><button class="hbk" onclick="gH()">←</button><div class="hdr-logo">🔤 <span>Letter Pop</span></div><div class="sbadge" id="lt-sc">⭐ 0</div></div><div class="gbody"><div class="narea"><div class="nface" id="lt-f">😊</div><div class="sbub" id="lt-b">Find the letter!</div></div><div class="srow" id="lt-st"></div><div class="pwrap"><div class="pfill" id="lt-p" style="width:0%"></div></div><div class="lbwrap" id="lt-l"><div class="lbfill" id="lt-lf"></div></div><div class="slbl">Find this letter!</div><div class="ldsp" id="lt-t"></div><div class="lch" id="lt-ch"></div><div class="gnav"><button class="nbtn bn hidden" id="lt-pb" onclick="pR()">← Prev</button><button class="nbtn sn" onclick="skR()">Skip</button><button class="nbtn nn" onclick="nR()">Next →</button></div></div></div>
 <div class="screen" id="s-pattern"><div class="hdr"><button class="hbk" onclick="gH()">←</button><div class="hdr-logo">🔁 <span>What Comes Next?</span></div><div class="sbadge" id="pt-sc">⭐ 0</div></div><div class="gbody"><div class="narea"><div class="nface" id="pt-f">😊</div><div class="sbub" id="pt-b">What comes next?</div></div><div class="srow" id="pt-st"></div><div class="pwrap"><div class="pfill" id="pt-p" style="width:0%"></div></div><div class="lbwrap" id="pt-l"><div class="lbfill" id="pt-lf"></div></div><div class="slbl">Complete the pattern!</div><div class="pat-seq" id="pt-seq"></div><div class="pat-ch" id="pt-ch"></div><div class="gnav"><button class="nbtn bn hidden" id="pt-pb" onclick="pR()">← Prev</button><button class="nbtn sn" onclick="skR()">Skip</button><button class="nbtn nn" onclick="nR()">Next →</button></div></div></div>
 <div class="screen" id="s-compare"><div class="hdr"><button class="hbk" onclick="gH()">←</button><div class="hdr-logo">📏 <span>Big or Small?</span></div><div class="sbadge" id="cm-sc">⭐ 0</div></div><div class="gbody"><div class="narea"><div class="nface" id="cm-f">😊</div><div class="sbub" id="cm-b">Which is bigger?</div></div><div class="srow" id="cm-st"></div><div class="pwrap"><div class="pfill" id="cm-p" style="width:0%"></div></div><div class="lbwrap" id="cm-l"><div class="lbfill" id="cm-lf"></div></div><div class="slbl" id="cm-lbl">Which is bigger?</div><div class="cmp-row" id="cm-ch"></div><div class="gnav"><button class="nbtn bn hidden" id="cm-pb" onclick="pR()">← Prev</button><button class="nbtn sn" onclick="skR()">Skip</button><button class="nbtn nn" onclick="nR()">Next →</button></div></div></div>
@@ -361,20 +359,36 @@ body{font-family:'Nunito',sans-serif;background:#f0e6d3;min-height:100vh;display
 <div class="screen" id="s-shadow"><div class="hdr"><button class="hbk" onclick="gH()">←</button><div class="hdr-logo">🌑 <span>Match the Shadow</span></div><div class="sbadge" id="sd-sc">⭐ 0</div></div><div class="gbody"><div class="narea"><div class="nface" id="sd-f">😊</div><div class="sbub" id="sd-b">Find the matching shadow!</div></div><div class="srow" id="sd-st"></div><div class="pwrap"><div class="pfill" id="sd-p" style="width:0%"></div></div><div class="lbwrap" id="sd-l"><div class="lbfill" id="sd-lf"></div></div><div class="slbl">Find the shadow!</div><div class="shad-row"><div class="shad-obj" id="sd-t"></div></div><div class="shad-ch" id="sd-ch"></div><div class="gnav"><button class="nbtn bn hidden" id="sd-pb" onclick="pR()">← Prev</button><button class="nbtn sn" onclick="skR()">Skip</button><button class="nbtn nn" onclick="nR()">Next →</button></div></div></div>
 
 </div><!-- .app -->
+<button class="fs-btn" id="fs-btn" onclick="toggleFS()" title="Fullscreen">⛶</button>
 
-<!-- FULLSCREEN BUTTON (desktop only, hidden on mobile via CSS) -->
-<button class="fs-btn" id="fs-btn" onclick="toggleFS()" title="Toggle fullscreen">⛶</button>
+<script type="module">
+// ── FIREBASE SETUP ──
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updatePassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-<script>
-const shf=a=>[...a].sort(()=>Math.random()-.5),pk=a=>a[Math.floor(Math.random()*a.length)];
-const ROUNDS=6,DELAY=2000;
-let cG=null,gS={},lT=null,nCB=null,cU=null,cAu=null,rcOpen=false,isFS=false;
+const firebaseConfig = {
+  apiKey: "AIzaSyCIPY5yakYTv-1Ay0x0vCoOeLut4UX1TXw",
+  authDomain: "kids-playroom.firebaseapp.com",
+  projectId: "kids-playroom",
+  storageBucket: "kids-playroom.firebasestorage.app",
+  messagingSenderId: "363703243482",
+  appId: "1:363703243482:web:320625d59ac34d20268be3"
+};
+
+const fbApp  = initializeApp(firebaseConfig);
+const auth   = getAuth(fbApp);
+const db     = getFirestore(fbApp);
+
+// ── STATE ──
+const shf=a=>[...a].sort(()=>Math.random()-.5), pk=a=>a[Math.floor(Math.random()*a.length)];
+const ROUNDS=6, DELAY=2000;
+let cG=null, gS={}, lT=null, nCB=null, cU=null, userProfile=null, rcOpen=false, isFS=false;
 
 const GAMES=[
   {id:'color',   name:'Color Splash',      emoji:'🎨',color:'or',pfx:'c'},
   {id:'count',   name:'Count!',            emoji:'🔢',color:'bl',pfx:'co'},
   {id:'shape',   name:'Shape Hunt',        emoji:'🔷',color:'gr',pfx:'sh'},
-
   {id:'letter',  name:'Letter Pop',        emoji:'🔤',color:'pi',pfx:'lt'},
   {id:'pattern', name:'What Comes Next?',  emoji:'🔁',color:'te',pfx:'pt'},
   {id:'compare', name:'Big or Small?',     emoji:'📏',color:'am',pfx:'cm'},
@@ -383,29 +397,235 @@ const GAMES=[
   {id:'shadow',  name:'Match the Shadow',  emoji:'🌑',color:'in',pfx:'sd'},
 ];
 
-// ── FULLSCREEN ──
-function toggleFS(){
-  const app=document.getElementById('app');
-  isFS=!isFS;
-  app.classList.toggle('fullscreen',isFS);
-  document.getElementById('fs-btn').textContent=isFS?'⛶':'⛶';
-  document.getElementById('fs-btn').title=isFS?'Exit fullscreen':'Enter fullscreen';
-  document.getElementById('fs-btn').style.background=isFS?'#555':'#FF6B35';
+// ── LOADING ──
+function showLoading(v){document.getElementById('loading-overlay').classList.toggle('hidden',!v);}
+
+// ── AUTH STATE LISTENER ──
+onAuthStateChanged(auth, async user => {
+  if(user){
+    cU=user;
+    userProfile=await loadProfile(user.uid);
+    showLoading(false);
+    sH();
+  } else {
+    cU=null; userProfile=null;
+    showLoading(false);
+    sS('welcome');
+  }
+});
+
+// ── FIRESTORE PROFILE ──
+async function loadProfile(uid){
+  try{
+    const snap=await getDoc(doc(db,'users',uid));
+    return snap.exists()?snap.data():{name:'Explorer',avatar:'',scores:{}};
+  }catch(e){return{name:'Explorer',avatar:'',scores:{}};}
 }
-// Also try native fullscreen API
-function toggleFS(){
+
+async function saveProfile(uid, data){
+  try{ await setDoc(doc(db,'users',uid), data, {merge:true}); }
+  catch(e){ console.error('Save profile error:',e); }
+}
+
+// ── SIGNUP ──
+window.dSU=async function(){
+  const n=document.getElementById('su-name').value.trim();
+  const e=document.getElementById('su-email').value.trim();
+  const p=document.getElementById('su-pass').value;
+  const err=document.getElementById('su-err');
+  const btn=document.getElementById('su-btn');
+  err.textContent='';
+  if(!n){err.textContent='Please enter the child\'s name!';return;}
+  if(!e||!e.includes('@')){err.textContent='Please enter a valid email!';return;}
+  if(p.length<6){err.textContent='Password must be at least 6 characters!';return;}
+  btn.disabled=true; btn.textContent='Creating account...';
+  try{
+    const cred=await createUserWithEmailAndPassword(auth,e,p);
+    await saveProfile(cred.user.uid,{name:n,avatar:'',scores:{}});
+  }catch(err2){
+    const msg=firebaseErrMsg(err2.code);
+    document.getElementById('su-err').textContent=msg;
+    btn.disabled=false; btn.textContent="Let's Play!";
+  }
+};
+
+// ── LOGIN ──
+window.dLI=async function(){
+  const e=document.getElementById('li-email').value.trim();
+  const p=document.getElementById('li-pass').value;
+  const err=document.getElementById('li-err');
+  const btn=document.getElementById('li-btn');
+  err.textContent='';
+  if(!e||!e.includes('@')){err.textContent='Please enter a valid email!';return;}
+  if(!p){err.textContent='Please enter your password!';return;}
+  btn.disabled=true; btn.textContent='Logging in...';
+  try{
+    await signInWithEmailAndPassword(auth,e,p);
+  }catch(err2){
+    document.getElementById('li-err').textContent=firebaseErrMsg(err2.code);
+    btn.disabled=false; btn.textContent='Log In';
+  }
+};
+
+// ── FORGOT PASSWORD ──
+window.dFP=async function(){
+  const e=document.getElementById('fp-email').value.trim();
+  const err=document.getElementById('fp-err');
+  const ok=document.getElementById('fp-ok');
+  const btn=document.getElementById('fp-btn');
+  err.textContent=''; ok.textContent='';
+  if(!e||!e.includes('@')){err.textContent='Please enter a valid email!';return;}
+  btn.disabled=true; btn.textContent='Sending...';
+  try{
+    await sendPasswordResetEmail(auth,e);
+    ok.textContent='Reset email sent! Check your inbox (and spam folder).';
+    document.getElementById('fp-email').value='';
+  }catch(err2){
+    err.textContent=firebaseErrMsg(err2.code);
+  }
+  btn.disabled=false; btn.textContent='Send Reset Link';
+};
+
+// ── LOGOUT ──
+window.dLO=async function(){
+  await signOut(auth);
+};
+
+// ── GUEST ──
+window.gP=function(){
+  cU=null; userProfile=null;
+  sH(true);
+};
+
+// ── FIREBASE ERROR MESSAGES ──
+function firebaseErrMsg(code){
+  const map={
+    'auth/email-already-in-use':'An account with this email already exists.',
+    'auth/invalid-email':'Please enter a valid email address.',
+    'auth/weak-password':'Password must be at least 6 characters.',
+    'auth/user-not-found':'No account found with this email.',
+    'auth/wrong-password':'Incorrect password. Try again.',
+    'auth/invalid-credential':'Incorrect email or password.',
+    'auth/too-many-requests':'Too many attempts. Please try again later.',
+    'auth/network-request-failed':'Network error. Check your connection.',
+  };
+  return map[code]||'Something went wrong. Please try again.';
+}
+
+// ── SCORES ──
+async function saveScore(gameId, score){
+  if(!cU||!userProfile)return;
+  const prev=(userProfile.scores&&userProfile.scores[gameId])||0;
+  if(score<=prev)return;
+  if(!userProfile.scores)userProfile.scores={};
+  userProfile.scores[gameId]=score;
+  await saveProfile(cU.uid,{scores:userProfile.scores});
+}
+
+function getScores(){return(userProfile&&userProfile.scores)||{};}
+function getTotal(){return Object.values(getScores()).reduce((a,b)=>a+b,0);}
+
+// ── AVATAR ──
+function getAv(){return(userProfile&&userProfile.avatar)||'';}
+
+function applyAv(av){
+  const ha=document.getElementById('home-av');
+  const hb=document.getElementById('home-av-btn');
+  ha.innerHTML=av?`<img src="${av}" alt="avatar">`:'🧒';
+  hb.innerHTML=av?`<img src="${av}" alt="avatar">`:'🧒';
+}
+
+window.trigAv=function(){document.getElementById('av-file').click();};
+window.onAvChange=function(e){
+  const file=e.target.files[0]; if(!file)return;
+  if(file.size>2*1024*1024){alert('Image too large. Please use an image under 2MB.');return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const data=ev.target.result;
+    const inner=document.getElementById('prof-av-inner');
+    inner.innerHTML=`<img src="${data}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    inner.dataset.newav=data;
+  };
+  reader.readAsDataURL(file);
+};
+
+// ── PROFILE SCREEN ──
+window.goProfile=function(){
+  if(!cU){alert('Please log in to access profile settings.');return;}
+  document.getElementById('pf-name').value=userProfile?userProfile.name:'';
+  document.getElementById('pf-email').value=cU.email||'';
+  document.getElementById('pf-np').value='';
+  document.getElementById('pf-cp').value='';
+  document.getElementById('pf-err').textContent='';
+  document.getElementById('pf-ok').textContent='';
+  const inner=document.getElementById('prof-av-inner');
+  inner.dataset.newav='';
+  const av=getAv();
+  inner.innerHTML=av?`<img src="${av}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:'🧒';
+  sS('profile');
+};
+
+window.savePF=async function(){
+  const n=document.getElementById('pf-name').value.trim();
+  const np=document.getElementById('pf-np').value;
+  const cp=document.getElementById('pf-cp').value;
+  const err=document.getElementById('pf-err');
+  const ok=document.getElementById('pf-ok');
+  const btn=document.getElementById('pf-btn');
+  err.textContent=''; ok.textContent='';
+  if(!n){err.textContent='Name cannot be empty!';return;}
+  btn.disabled=true; btn.textContent='Saving...';
+  try{
+    // Update password if provided
+    if(np){
+      if(np!==cp){err.textContent='Passwords do not match!';btn.disabled=false;btn.textContent='Save Changes';return;}
+      if(np.length<6){err.textContent='Password must be at least 6 characters!';btn.disabled=false;btn.textContent='Save Changes';return;}
+      await updatePassword(cU,np);
+    }
+    // Update name
+    if(!userProfile)userProfile={name:n,avatar:'',scores:{}};
+    userProfile.name=n;
+    // Update avatar if changed
+    const inner=document.getElementById('prof-av-inner');
+    if(inner.dataset.newav){userProfile.avatar=inner.dataset.newav;}
+    await saveProfile(cU.uid,userProfile);
+    applyAv(getAv());
+    document.getElementById('htag').textContent=`Hi, ${n}! Ready to play?`;
+    ok.textContent='Profile updated successfully!';
+    setTimeout(()=>sS('home'),1000);
+  }catch(e2){
+    if(e2.code==='auth/requires-recent-login'){
+      err.textContent='For security, please log out and log back in before changing your password.';
+    } else {
+      err.textContent=firebaseErrMsg(e2.code)||'Error saving. Please try again.';
+    }
+  }
+  btn.disabled=false; btn.textContent='Save Changes';
+};
+
+window.sendPWReset=async function(){
+  if(!cU)return;
+  try{
+    await sendPasswordResetEmail(auth,cU.email);
+    document.getElementById('pf-ok').textContent='Password reset email sent to '+cU.email;
+  }catch(e){
+    document.getElementById('pf-err').textContent='Could not send reset email.';
+  }
+};
+
+// ── FULLSCREEN ──
+window.toggleFS=function(){
   isFS=!isFS;
-  const app=document.getElementById('app');
   if(isFS){
-    if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen();
-    else app.classList.add('fullscreen');
+    if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});
+    document.getElementById('app').classList.add('fullscreen');
   } else {
     if(document.exitFullscreen&&document.fullscreenElement)document.exitFullscreen();
-    else app.classList.remove('fullscreen');
+    document.getElementById('app').classList.remove('fullscreen');
   }
   document.getElementById('fs-btn').textContent=isFS?'✕':'⛶';
   document.getElementById('fs-btn').style.background=isFS?'#555':'#FF6B35';
-}
+};
 document.addEventListener('fullscreenchange',()=>{
   if(!document.fullscreenElement){
     isFS=false;
@@ -415,6 +635,60 @@ document.addEventListener('fullscreenchange',()=>{
   }
 });
 
+// ── RESULT CARD ──
+window.toggleResults=function(){
+  rcOpen=!rcOpen;
+  document.getElementById('rc-body').classList.toggle('open',rcOpen);
+  document.getElementById('rc-arrow').classList.toggle('open',rcOpen);
+  document.getElementById('rc-meta').textContent=`Total: ⭐${getTotal()} · Tap to ${rcOpen?'collapse':'expand'}`;
+};
+
+function renderResultCard(){
+  const sc=getScores(), total=getTotal();
+  document.getElementById('rc-total').textContent='⭐ '+total;
+  document.getElementById('rc-meta').textContent=`Total: ⭐${total} · Tap to ${rcOpen?'collapse':'expand'}`;
+  const list=document.getElementById('rc-list'); list.innerHTML='';
+  GAMES.forEach(g=>{
+    const best=sc[g.id]||0;
+    const row=document.createElement('div'); row.className='score-row';
+    row.innerHTML=`<div class="score-row-icon">${g.emoji}</div><div class="score-row-name">${g.name}</div><div style="text-align:right"><div class="score-row-val">⭐${best}/${ROUNDS}</div><div class="score-row-stars">${'★'.repeat(best)}${'☆'.repeat(ROUNDS-best)}</div></div>`;
+    list.appendChild(row);
+  });
+}
+
+// ── HOME ──
+function sH(isGuest=false){
+  const av=getAv();
+  applyAv(av);
+  const name=userProfile?userProfile.name:cU?cU.email:'Explorer';
+  document.getElementById('htag').textContent=`Hi, ${name}! Ready to play?`;
+  buildGrid(isGuest);
+  document.getElementById('guest-banner').style.display=isGuest?'block':'none';
+  document.getElementById('result-card').style.display=isGuest?'none':'block';
+  if(!isGuest)renderResultCard();
+  sS('home');
+}
+
+function buildGrid(isGuest){
+  const sc=getScores();
+  const grid=document.getElementById('game-grid'); grid.innerHTML='';
+  GAMES.forEach(g=>{
+    const best=sc[g.id]||0;
+    const card=document.createElement('div'); card.className='gcard'; card.dataset.c=g.color;
+    card.onclick=()=>sG(g.id);
+    card.innerHTML=`${!isGuest&&best>0?`<div class="gsc">⭐${best}</div>`:''}<div class="gce">${g.emoji}</div><div class="gcn">${g.name}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+// ── SCREEN ──
+window.sS=function(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('s-'+id).classList.add('active');};
+window.gH=function(){cL();if(window.speechSynthesis)window.speechSynthesis.cancel();document.getElementById('wo').classList.remove('show');sH(!cU);};
+
+// ── LOADER ──
+function stL(px,cb){cL();nCB=cb;const w=document.getElementById(px+'-l'),f=document.getElementById(px+'-lf');w.classList.add('show');f.style.transition='none';f.style.width='0%';setTimeout(()=>{f.style.transition=`width ${DELAY}ms linear`;f.style.width='100%';},30);lT=setTimeout(()=>{w.classList.remove('show');f.style.width='0%';if(nCB){nCB();nCB=null;}},DELAY);}
+function cL(){if(lT){clearTimeout(lT);lT=null;}nCB=null;document.querySelectorAll('.lbwrap').forEach(e=>e.classList.remove('show'));document.querySelectorAll('.lbfill').forEach(e=>{e.style.transition='none';e.style.width='0%';});}
+
 // ── AUDIO ──
 let aC=null;
 function gAC(){if(!aC)aC=new(window.AudioContext||window.webkitAudioContext)();return aC;}
@@ -423,176 +697,18 @@ function pOK(){try{const c=gAC(),n=c.currentTime;[523,659,784,1047].forEach((f,i
 function pNG(){try{const c=gAC(),n=c.currentTime;pTone(300,'sawtooth',.15,.2,n,c);pTone(220,'sawtooth',.2,.2,n+.15,c);}catch(e){}}
 function pWN(){try{const c=gAC(),n=c.currentTime;[523,659,784,659,523,659,784,1047].forEach((f,i)=>pTone(f,'sine',.18,.35,n+i*.12,c));}catch(e){}}
 function pPP(){try{const c=gAC(),n=c.currentTime;pTone(800,'sine',.08,.3,n,c);pTone(1200,'sine',.06,.1,n+.05,c);}catch(e){}}
-async function spk(text){
-  if(cAu){cAu.pause();cAu=null;}
-  if(window.speechSynthesis)window.speechSynthesis.cancel();
-  const cl=text.replace(/[\u{1F000}-\u{1FFFF}]/gu,'').replace(/[\u2600-\u27FF]/g,'').replace(/[!]{2,}/g,'!').replace(/\s+/g,' ').trim();
+
+function spk(text){
   if(!('speechSynthesis'in window))return;
-  const u=new SpeechSynthesisUtterance(cl);u.rate=.9;u.pitch=1.4;
+  window.speechSynthesis.cancel();
+  const cl=text.replace(/[\u{1F000}-\u{1FFFF}]/gu,'').replace(/[\u2600-\u27FF]/g,'').replace(/[!]{2,}/g,'!').replace(/\s+/g,' ').trim();
+  const u=new SpeechSynthesisUtterance(cl); u.rate=.9; u.pitch=1.4;
   const vs=window.speechSynthesis.getVoices();
   const pv=vs.find(v=>/samantha|karen|moira|fiona|zira|female/i.test(v.name))||vs.find(v=>v.lang.startsWith('en'))||vs[0];
   if(pv)u.voice=pv;
   window.speechSynthesis.speak(u);
 }
 if(window.speechSynthesis){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();}
-
-// ── AUTH ──
-function gUs(){return JSON.parse(localStorage.getItem('kp_users')||'{}');}
-function sUs(u){localStorage.setItem('kp_users',JSON.stringify(u));}
-function dSU(){
-  const n=document.getElementById('su-name').value.trim(),e=document.getElementById('su-email').value.trim(),p=document.getElementById('su-pass').value,err=document.getElementById('su-err');
-  if(!n){err.textContent='Please enter a name!';return;}
-  if(!e||!e.includes('@')){err.textContent='Please enter a valid email!';return;}
-  if(p.length<4){err.textContent='Password must be at least 4 chars!';return;}
-  const us=gUs();if(us[e]){err.textContent='Account already exists!';return;}
-  us[e]={name:n,password:p,avatar:'',scores:{}};sUs(us);err.textContent='';lU({name:n,email:e});
-}
-function dLI(){
-  const e=document.getElementById('li-email').value.trim(),p=document.getElementById('li-pass').value,err=document.getElementById('li-err'),us=gUs();
-  if(!us[e]||us[e].password!==p){err.textContent='Incorrect email or password!';return;}
-  err.textContent='';lU({name:us[e].name,email:e});
-}
-function dFP(){
-  const e=document.getElementById('fp-email').value.trim(),err=document.getElementById('fp-err'),ok=document.getElementById('fp-ok');
-  err.textContent='';ok.textContent='';
-  if(!e||!e.includes('@')){err.textContent='Please enter a valid email!';return;}
-  // Production: send real reset email via Firebase/Supabase/EmailJS here
-  ok.textContent=`If an account exists for ${e}, a reset link has been sent!`;
-  document.getElementById('fp-email').value='';
-}
-function gP(){lU({name:'Explorer',email:null,guest:true});}
-function lU(u){cU=u;localStorage.setItem('kp_session',JSON.stringify(u));sH();}
-function dLO(){cU=null;localStorage.removeItem('kp_session');sS('welcome');}
-
-// ── SCORES ──
-function getScores(){if(!cU||cU.guest)return{};const us=gUs();return(us[cU.email]&&us[cU.email].scores)||{};}
-function saveScore(id,score){
-  if(!cU||cU.guest)return;
-  const us=gUs();if(!us[cU.email])return;
-  if(!us[cU.email].scores)us[cU.email].scores={};
-  const prev=us[cU.email].scores[id]||0;
-  if(score>prev)us[cU.email].scores[id]=score;
-  sUs(us);
-}
-function getTotal(){return Object.values(getScores()).reduce((a,b)=>a+b,0);}
-
-// ── RESULT CARD ──
-function toggleResults(){
-  rcOpen=!rcOpen;
-  document.getElementById('rc-body').classList.toggle('open',rcOpen);
-  document.getElementById('rc-arrow').classList.toggle('open',rcOpen);
-}
-function renderResultCard(){
-  const sc=getScores(),total=getTotal();
-  document.getElementById('rc-total').textContent='⭐ '+total;
-  document.getElementById('rc-meta').textContent=`Total: ⭐ ${total} · Tap to ${rcOpen?'collapse':'expand'}`;
-  const list=document.getElementById('rc-list');list.innerHTML='';
-  GAMES.forEach(g=>{
-    const best=sc[g.id]||0;
-    const row=document.createElement('div');row.className='score-row';
-    row.innerHTML=`<div class="score-row-icon">${g.emoji}</div><div class="score-row-name">${g.name}</div><div style="text-align:right"><div class="score-row-val">⭐${best}/${ROUNDS}</div><div class="score-row-stars">${'★'.repeat(best)}${'☆'.repeat(ROUNDS-best)}</div></div>`;
-    list.appendChild(row);
-  });
-}
-
-// ── AVATAR ──
-function getAv(){if(!cU||cU.guest)return'';const us=gUs();return(us[cU.email]&&us[cU.email].avatar)||'';}
-function applyAv(av){
-  // home avatar circle
-  const ha=document.getElementById('home-av');
-  ha.innerHTML=av?`<img src="${av}" alt="avatar">`:'🧒';
-  // header profile button
-  const hb=document.getElementById('home-av-btn');
-  hb.innerHTML=av?`<img src="${av}" alt="avatar">`:'🧒';
-}
-function trigAv(){document.getElementById('av-file').click();}
-function onAvChange(e){
-  const file=e.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    const data=ev.target.result;
-    const inner=document.getElementById('prof-av-inner');
-    inner.innerHTML=`<img src="${data}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-    inner.dataset.newav=data;
-  };
-  reader.readAsDataURL(file);
-}
-
-// ── PROFILE ──
-function goProfile(){
-  if(!cU||cU.guest){alert('Please log in to access profile settings.');return;}
-  const us=gUs(),u=us[cU.email];
-  document.getElementById('pf-name').value=u.name||'';
-  document.getElementById('pf-email').value=cU.email||'';
-  document.getElementById('pf-op').value='';
-  document.getElementById('pf-np').value='';
-  document.getElementById('pf-err').textContent='';
-  document.getElementById('pf-ok').textContent='';
-  const inner=document.getElementById('prof-av-inner');
-  inner.dataset.newav='';
-  inner.innerHTML=u.avatar?`<img src="${u.avatar}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:'🧒';
-  sS('profile');
-}
-function savePF(){
-  const n=document.getElementById('pf-name').value.trim();
-  const ne=document.getElementById('pf-email').value.trim();
-  const op=document.getElementById('pf-op').value;
-  const np=document.getElementById('pf-np').value;
-  const err=document.getElementById('pf-err'),ok=document.getElementById('pf-ok');
-  err.textContent='';ok.textContent='';
-  if(!n){err.textContent='Name cannot be empty!';return;}
-  if(!ne||!ne.includes('@')){err.textContent='Please enter a valid email!';return;}
-  const us=gUs(),u=us[cU.email];
-  if(np){
-    if(op!==u.password){err.textContent='Current password is incorrect!';return;}
-    if(np.length<4){err.textContent='New password must be at least 4 chars!';return;}
-    u.password=np;
-  }
-  if(ne!==cU.email){
-    if(us[ne]){err.textContent='That email is already in use!';return;}
-    us[ne]=u;delete us[cU.email];cU.email=ne;
-  }
-  u.name=n;cU.name=n;
-  const inner=document.getElementById('prof-av-inner');
-  if(inner.dataset.newav){u.avatar=inner.dataset.newav;}
-  sUs(us);localStorage.setItem('kp_session',JSON.stringify(cU));
-  ok.textContent='Profile updated!';
-  setTimeout(()=>sH(),900);
-}
-
-// ── HOME ──
-function sH(){
-  const av=getAv();
-  applyAv(av);
-  document.getElementById('htag').textContent=`Hi, ${cU?cU.name:'Explorer'}! Ready to play?`;
-  buildGrid();
-  // Guest banner vs result card
-  const isGuest=!cU||cU.guest;
-  document.getElementById('guest-banner').style.display=isGuest?'block':'none';
-  document.getElementById('result-card').style.display=isGuest?'none':'block';
-  if(!isGuest)renderResultCard();
-  sS('home');
-}
-
-function buildGrid(){
-  const sc=getScores();
-  const grid=document.getElementById('game-grid');grid.innerHTML='';
-  GAMES.forEach(g=>{
-    const best=sc[g.id]||0;
-    const card=document.createElement('div');card.className='gcard';card.dataset.c=g.color;
-    card.onclick=()=>sG(g.id);
-    card.innerHTML=`${(!cU||cU.guest)?'':best>0?`<div class="gsc">⭐${best}</div>`:''}<div class="gce">${g.emoji}</div><div class="gcn">${g.name}</div>`;
-    grid.appendChild(card);
-  });
-}
-
-// ── SCREEN ──
-function sS(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('s-'+id).classList.add('active');}
-function gH(){cL();if(cAu){cAu.pause();cAu=null;}if(window.speechSynthesis)window.speechSynthesis.cancel();document.getElementById('wo').classList.remove('show');sH();}
-
-// ── LOADER ──
-function stL(px,cb){cL();nCB=cb;const w=document.getElementById(px+'-l'),f=document.getElementById(px+'-lf');w.classList.add('show');f.style.transition='none';f.style.width='0%';setTimeout(()=>{f.style.transition=`width ${DELAY}ms linear`;f.style.width='100%';},30);lT=setTimeout(()=>{w.classList.remove('show');f.style.width='0%';if(nCB){nCB();nCB=null;}},DELAY);}
-function cL(){if(lT){clearTimeout(lT);lT=null;}nCB=null;document.querySelectorAll('.lbwrap').forEach(e=>e.classList.remove('show'));document.querySelectorAll('.lbfill').forEach(e=>{e.style.transition='none';e.style.width='0%';});}
 
 // ── GAME HELPERS ──
 function rSt(p,s){const el=document.getElementById(p+'-st');el.innerHTML='';for(let i=0;i<ROUNDS;i++){const st=document.createElement('div');st.className='star '+(i<s?'lit':'dim');st.textContent='★';el.appendChild(st);}}
@@ -602,41 +718,46 @@ function sB(p,t){document.getElementById(p+'-b').textContent=t;}
 function bnc(p){const el=document.getElementById(p+'-f');el.classList.remove('bounce');void el.offsetWidth;el.classList.add('bounce');setTimeout(()=>el.classList.remove('bounce'),600);}
 function shk(p){const el=document.getElementById(p+'-f');el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');setTimeout(()=>el.classList.remove('shake'),500);}
 function spC(n){const area=document.getElementById('cf'),cols=['#FF6B35','#FFE066','#66BB6A','#42A5F5','#EC407A','#AB47BC','#FFA726'];for(let i=0;i<(n||18);i++){const el=document.createElement('div');el.className='cfp';el.style.cssText=`left:${Math.random()*100}%;top:-20px;background:${cols[Math.floor(Math.random()*cols.length)]};width:${7+Math.random()*7}px;height:${7+Math.random()*7}px;border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${.9+Math.random()*1.1}s;animation-delay:${Math.random()*.4}s;`;area.appendChild(el);setTimeout(()=>el.remove(),3000);}}
-function sW(px,score){
-  spC(40);pWN();
+
+async function sW(px,score){
+  spC(40); pWN();
   const g=GAMES.find(x=>x.pfx===px);
   const prevBest=getScores()[g?g.id:'']||0;
-  saveScore(g?g.id:'',score);
+  await saveScore(g?g.id:'',score);
   document.getElementById('we').textContent=score>=ROUNDS?'🏆':score>=4?'🎉':'😊';
   document.getElementById('wt').textContent=score>=ROUNDS?'Perfect Score!':score>=4?'Amazing job!':'Good try!';
   document.getElementById('ws').textContent=`You got ${score} out of ${ROUNDS} stars!`;
-  const isGuest=!cU||cU.guest;
-  document.getElementById('wbest').textContent=isGuest?'🔒 Log in to save your score!':(score>prevBest?'🌟 New best score!':'Best: ⭐'+prevBest+'/'+ROUNDS);
+  const isGuest=!cU;
+  document.getElementById('wbest').textContent=isGuest?'🔒 Log in to save your score!':(score>prevBest&&score>0?'🌟 New best score!':prevBest>0?`Best: ⭐${prevBest}/${ROUNDS}`:'');
   document.getElementById('wo').classList.add('show');
   spk(score>=ROUNDS?'Perfect Score! You are amazing!':score>=4?'Amazing job! Well done!':'Good try! Keep practicing!');
 }
-function pAg(){document.getElementById('wo').classList.remove('show');sG(cG);}
+
+window.pAg=function(){document.getElementById('wo').classList.remove('show');sG(cG);};
 function uPB(p){const btn=document.getElementById(p+'-pb');if(btn)btn.classList.toggle('hidden',gS.round===0);}
 
 const rFns={color:cRnd,count:coRnd,shape:shRnd,letter:ltRnd,pattern:ptRnd,compare:cmRnd,emotion:emRnd,odd:odRnd,shadow:sdRnd};
-function nR(){cL();gS.round++;if(gS.round>=ROUNDS){sW(GAMES.find(g=>g.id===cG).pfx,gS.score);return;}rFns[cG]();}
-function skR(){cL();gS.round++;if(gS.round>=ROUNDS){sW(GAMES.find(g=>g.id===cG).pfx,gS.score);return;}rFns[cG]();}
-function pR(){cL();if(gS.round===0)return;gS.round--;gS.score=gS.sH[gS.round];const g=GAMES.find(x=>x.id===cG);document.getElementById(g.pfx+'-sc').textContent='⭐ '+gS.score;rSt(g.pfx,gS.score);gS.rm=true;rFns[cG]();}
+window.nR=function(){cL();gS.round++;if(gS.round>=ROUNDS){sW(GAMES.find(g=>g.id===cG).pfx,gS.score);return;}rFns[cG]();};
+window.skR=function(){cL();gS.round++;if(gS.round>=ROUNDS){sW(GAMES.find(g=>g.id===cG).pfx,gS.score);return;}rFns[cG]();};
+window.pR=function(){cL();if(gS.round===0)return;gS.round--;gS.score=gS.sH[gS.round];const g=GAMES.find(x=>x.id===cG);document.getElementById(g.pfx+'-sc').textContent='⭐ '+gS.score;rSt(g.pfx,gS.score);gS.rm=true;rFns[cG]();};
+
 function hC(px,nF){
   if(!gS.rm){gS.score++;gS.sH[gS.round]=gS.score;}
   gS.rm=false;
   document.getElementById(px+'-sc').textContent='⭐ '+gS.score;
   rSt(px,gS.score);sF(px,'happy');bnc(px);pOK();
-  const n=cU&&!cU.guest?cU.name:'';
+  const n=userProfile?userProfile.name:'';
   const ph=pk([`Great job${n?', '+n:''}!`,'That is correct!','Well done!','Super!','Brilliant!','You got it!','Fantastic!','Hooray!']);
   sB(px,ph+' ⭐');spk(ph);spC(12);
   gS.round++;gS.sH[gS.round]=gS.score;
   stL(px,()=>{if(gS.round>=ROUNDS)sW(px,gS.score);else nF();});
 }
 function hW(px,rs){gS.rm=false;sF(px,'wrong');shk(px);pNG();const ph=pk(['Try again!','Almost! Look carefully.','Keep trying!','Not quite!','Oops!']);sB(px,ph);spk(ph);setTimeout(()=>{sF(px,'idle');sB(px,rs);gS.canTap=true;},900);}
+
 function sG(name){
-  cG=name;cL();document.getElementById('wo').classList.remove('show');
-  const g=GAMES.find(x=>x.id===name);sS(name);
+  cG=name; cL();
+  document.getElementById('wo').classList.remove('show');
+  const g=GAMES.find(x=>x.id===name); sS(name);
   gS={round:0,score:0,canTap:true,sH:[0],rm:false,seeds:[]};
   for(let i=0;i<ROUNDS;i++)gS.seeds.push(Math.random());
   document.getElementById(g.pfx+'-sc').textContent='⭐ 0';
@@ -659,7 +780,7 @@ function shRnd(){gS.canTap=true;uPr('sh',gS.round);uPB('sh');const pool=shf([...
 const LTRS='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 function ltRnd(){gS.canTap=true;uPr('lt',gS.round);uPB('lt');const pool=shf([...LTRS]),t=pool[0],ch=shf(pool.slice(0,4));gS.ltT=t;document.getElementById('lt-t').textContent=t;sF('lt','idle');sB('lt',`Find the letter ${t}!`);spk(`Find the letter ${t}!`);const g=document.getElementById('lt-ch');g.innerHTML='';ch.forEach(l=>{const b=document.createElement('button');b.className='lbtnx';b.textContent=l;b.onclick=()=>{if(!gS.canTap)return;gS.canTap=false;pPP();if(l===gS.ltT){b.classList.add('correct');hC('lt',ltRnd);}else{b.classList.add('wrong');hW('lt',`Find the letter ${gS.ltT}!`);setTimeout(()=>b.classList.remove('wrong'),900);}};g.appendChild(b);});}
 
-// ── GAME 6: PATTERN ──
+// ── GAME 5: PATTERN ──
 const PATS=[['🔴','🔵'],['⭐','🌙'],['🐶','🐱'],['🍎','🍊'],['🌸','🌺'],['🚂','✈️'],['🎈','🎀'],['🐸','🐢']];
 function ptRnd(){
   gS.canTap=true;uPr('pt',gS.round);uPB('pt');
@@ -678,7 +799,7 @@ function ptRnd(){
   opts.forEach(em=>{const b2=document.createElement('button');b2.className='pat-btn';b2.textContent=em;b2.onclick=()=>{if(!gS.canTap)return;gS.canTap=false;pPP();if(em===gS.ptAns){b2.classList.add('correct');hC('pt',ptRnd);}else{b2.classList.add('wrong');hW('pt','What comes next?');setTimeout(()=>b2.classList.remove('wrong'),900);}};g.appendChild(b2);});
 }
 
-// ── GAME 7: COMPARE ──
+// ── GAME 6: COMPARE ──
 const CMPS=[{a:{e:'🐭',n:'Mouse'},b:{e:'🐘',n:'Elephant'},q:'Which is bigger?'},{a:{e:'🌸',n:'Flower'},b:{e:'🌳',n:'Tree'},q:'Which is bigger?'},{a:{e:'🐜',n:'Ant'},b:{e:'🦁',n:'Lion'},q:'Which is bigger?'},{a:{e:'🍇',n:'Grapes'},b:{e:'🍉',n:'Watermelon'},q:'Which is bigger?'},{a:{e:'🐣',n:'Chick'},b:{e:'🦅',n:'Eagle'},q:'Which is bigger?'},{a:{e:'🏠',n:'House'},b:{e:'🏰',n:'Castle'},q:'Which is bigger?'}];
 function cmRnd(){
   gS.canTap=true;uPr('cm',gS.round);uPB('cm');
@@ -697,15 +818,15 @@ function cmRnd(){
   });
 }
 
-// ── GAME 8: EMOTION ──
+// ── GAME 7: EMOTION ──
 const EMOS=[{face:'😄',name:'Happy',wrong:['Sad','Angry','Scared']},{face:'😢',name:'Sad',wrong:['Happy','Angry','Surprised']},{face:'😠',name:'Angry',wrong:['Happy','Sad','Scared']},{face:'😨',name:'Scared',wrong:['Happy','Sad','Surprised']},{face:'😲',name:'Surprised',wrong:['Happy','Sad','Angry']},{face:'😴',name:'Sleepy',wrong:['Happy','Angry','Surprised']},{face:'🤢',name:'Sick',wrong:['Happy','Sad','Scared']},{face:'🥳',name:'Excited',wrong:['Sad','Scared','Angry']}];
 function emRnd(){gS.canTap=true;uPr('em',gS.round);uPB('em');const em=pk(EMOS);gS.emAns=em.name;document.getElementById('em-t').textContent=em.face;sF('em','idle');sB('em','How does this face feel?');spk('How does this face feel?');const opts=shf([em.name,...shf(em.wrong).slice(0,3)]);const g=document.getElementById('em-ch');g.innerHTML='';opts.forEach(nm=>{const b=document.createElement('button');b.className='emo-btn';b.textContent=nm;b.onclick=()=>{if(!gS.canTap)return;gS.canTap=false;pPP();if(nm===gS.emAns){b.classList.add('correct');hC('em',emRnd);}else{b.classList.add('wrong');hW('em','How does this face feel?');setTimeout(()=>b.classList.remove('wrong'),900);}};g.appendChild(b);});}
 
-// ── GAME 9: ODD ONE OUT ──
+// ── GAME 8: ODD ONE OUT ──
 const ODD_GRP=[{items:['🐶','🐱','🐮','🚗'],odd:'🚗'},{items:['🍎','🍊','🍋','🚂'],odd:'🚂'},{items:['🚗','🚂','✈️','🌸'],odd:'🌸'},{items:['🍕','🍔','🌮','🎈'],odd:'🎈'},{items:['🌸','🌺','🌻','🏈'],odd:'🏈'},{items:['🎈','🎀','🪀','🐘'],odd:'🐘'},{items:['👒','👗','👟','🍕'],odd:'🍕'},{items:['🏈','⚽','🎾','🍔'],odd:'🍔'}];
 function odRnd(){gS.canTap=true;uPr('od',gS.round);uPB('od');const grp=pk(ODD_GRP);gS.odAns=grp.odd;const items=shf([...grp.items]);sF('od','idle');sB('od','Which one does not belong?');spk('Which one does not belong?');const g=document.getElementById('od-ch');g.innerHTML='';items.forEach(em=>{const b=document.createElement('div');b.className='odd-btn';b.textContent=em;b.onclick=()=>{if(!gS.canTap)return;gS.canTap=false;pPP();if(em===gS.odAns){b.classList.add('correct');hC('od',odRnd);}else{b.classList.add('wrong');hW('od','Which one does not belong?');setTimeout(()=>b.classList.remove('wrong'),900);}};g.appendChild(b);});}
 
-// ── GAME 10: SHADOW ──
+// ── GAME 9: SHADOW ──
 const SHAD=['🦋','🐘','🚂','🌟','🎈','🍎','🦁','🐢','🌸','✈️'];
 function sdRnd(){
   gS.canTap=true;uPr('sd',gS.round);uPB('sd');
@@ -716,12 +837,6 @@ function sdRnd(){
   opts.forEach(em=>{const b=document.createElement('div');b.className='shad-btn';b.innerHTML=`<span class="shad-emoji">${em}</span>`;b.onclick=()=>{if(!gS.canTap)return;gS.canTap=false;pPP();if(em===gS.sdAns){b.classList.add('correct');hC('sd',sdRnd);}else{b.classList.add('wrong');hW('sd','Find the matching shadow!');setTimeout(()=>b.classList.remove('wrong'),900);}};g.appendChild(b);});
 }
 
-// ── INIT ──
-(function(){
-  const s=localStorage.getItem('kp_session');
-  if(s){try{cU=JSON.parse(s);sH();}catch(e){sS('welcome');}}
-  else sS('welcome');
-})();
 </script>
 </body>
 </html>
